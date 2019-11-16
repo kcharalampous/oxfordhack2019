@@ -9,6 +9,8 @@ esxBoughtPrice= 0
 esxOpenPosition= False
 esxStepAmount= 3.0
 
+prev_esx_bids, prev_sp_bids = [], []
+
 def start_autotrader():
     read_csv()
 
@@ -24,6 +26,43 @@ def read_csv():
         line_count = 0
         for row in csv_reader:
             handle_message_market(row)
+
+
+# sp price: ~3360
+# esx price: ~2910
+def act_on_between_stock_correlation():
+    while True:
+        if prices_went_up_for_last_n_ticks(exs) and sp_did_not_go_up:
+            buy_sp()
+        elif sp_went_up_for_three_ticks and esx_did_not_go_up:
+            buy_esx()
+        elif esx_went_down_for_three_ticks and sp_did_not_go_down:
+            sell_sp()
+        elif sp_went_down_for_three_ticks and esx_did_not_go_down:
+            sell_esx()
+
+
+def prices_went_up_for_last_n_ticks(stock_prices):
+    # number of ticks that you want to look at
+    n = min(len(stock_prices), 3)
+    went_up = False
+    went_down = False
+    if stock_prices[:-n] > stock_prices[:-n+1]:
+        went_down = True
+    elif stock_prices[:-n] <= stock_prices[:n+1]:
+        went_up = True
+    if went_down:
+        for i in range(n+1, 1, -1):
+            if not stock_prices[:-i] < stock_prices[:-i+1]:
+                return False
+        return True
+
+    if went_up:
+        for i in range(n+1, 1, -1):
+            if not stock_prices[:-i] > stock_prices[:-i+1]:
+                return False
+        return True
+
 
 
 def handle_message_market(message):
