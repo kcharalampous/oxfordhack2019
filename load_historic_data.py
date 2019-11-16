@@ -23,28 +23,21 @@ sp_ask_vol = np.asarray(list(map(float, sp_data[:,5])))
 corr = np.corrcoef(esx_bid_price[:11000], sp_bid_price[:11000])
 print(corr)
 
+# sp price: ~3360
+# esx price: ~2910
+def act_on_between_stock_correlation():
+    while True:
+        if esx_went_up_for_three_ticks and sp_did_not_go_up:
+            buy_sp()
+        elif sp_went_up_for_three_ticks and esx_did_not_go_up:
+            buy_esx()
+        elif esx_went_down_for_three_ticks and sp_did_not_go_down:
+            sell_sp()
+        elif sp_went_down_for_three_ticks and esx_did_not_go_down:
+            sell_esx()
 
-# bidPrices['ESX-FUTURE'] = data[data[:,1]=='ESX-FUTURE']
-#     # [float(x[2]) for x in data if x[1] == 'ESX-FUTURE']
-# bidPrices['SP-FUTURE'] = [float(x[2]) for x in data if x[1] == 'SP-FUTURE']
-# askPrices['ESX-FUTURE'] = [float(x[4]) for x in data if x[1] == 'ESX-FUTURE']
 
-# print(my_data[0])
 
-indices = np.arange(len(data))
 
-# plt.figure()
-# plt.title("Bid Price against Time")
-# plt.plot(np.arange(len(bidPrices['ESX-FUTURE'])), bidPrices['ESX-FUTURE'], label="ESX-FUTURE")
-# plt.plot(np.arange(len(bidPrices['SP-FUTURE'])), bidPrices['SP-FUTURE'], label="SP-FUTURE")
-# plt.legend()
-# plt.show()
-#
-# plt.figure()
-# plt.title("Bid price vs ask price for ESX")
-# plt.plot(np.arange(len(bidPrices['ESX-FUTURE'])), bidPrices['ESX-FUTURE'], label="Bid")
-# plt.plot(np.arange(len(bidPrices['ESX-FUTURE'])), askPrices['ESX-FUTURE'], label="Ask")
-# plt.legend()
-# plt.show()
 
 
